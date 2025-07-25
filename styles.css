@@ -337,6 +337,8 @@ button, .cta-button {
 .hero-text {
     flex: 1;
     min-width: 300px;
+    position: relative;
+    z-index: 10;
 }
 
 .hero-visual {
@@ -421,6 +423,7 @@ button, .cta-button {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     animation: floatingCard 3s ease-in-out infinite;
     will-change: transform;
+    z-index: 1;
 }
 
 .floating-card:nth-child(1) {
@@ -1008,6 +1011,7 @@ section {
     
     .floating-card {
         padding: 15px;
+        z-index: 1;
     }
     
     .floating-card:nth-child(1) {
@@ -1245,6 +1249,7 @@ section {
     
     .floating-card {
         padding: 12px;
+        z-index: 1;
     }
     
     .card-content i {
@@ -1362,6 +1367,7 @@ section {
     
     .floating-card {
         padding: 10px;
+        z-index: 1;
     }
     
     .hero-visual {
