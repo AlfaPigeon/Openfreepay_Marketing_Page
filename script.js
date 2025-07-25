@@ -10,6 +10,7 @@ class OpenFreePayApp {
   init() {
     this.detectLanguage();
     this.initializeLanguageSelector();
+    this.initializeMobileMenu();
     this.initializeWaitlist();
     this.initializeModal();
     this.translatePage();
@@ -39,15 +40,89 @@ class OpenFreePayApp {
   // Initialize language selector dropdown
   initializeLanguageSelector() {
     const languageSelect = document.getElementById('languageSelect');
-    if (!languageSelect) return;
+    const mobileLanguageSelect = document.getElementById('mobileLanguageSelect');
+    
+    // Set current language in both dropdowns
+    if (languageSelect) {
+      languageSelect.value = this.currentLanguage;
+      languageSelect.addEventListener('change', (e) => {
+        this.switchLanguage(e.target.value);
+      });
+    }
+    
+    if (mobileLanguageSelect) {
+      mobileLanguageSelect.value = this.currentLanguage;
+      mobileLanguageSelect.addEventListener('change', (e) => {
+        this.switchLanguage(e.target.value);
+      });
+    }
+  }
 
-    // Set current language in dropdown
-    languageSelect.value = this.currentLanguage;
-
-    // Add event listener for language changes
-    languageSelect.addEventListener('change', (e) => {
-      this.switchLanguage(e.target.value);
+  // Initialize mobile menu functionality
+  initializeMobileMenu() {
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const body = document.body;
+    
+    if (!mobileMenuToggle || !mobileMenu) return;
+    
+    // Toggle mobile menu
+    mobileMenuToggle.addEventListener('click', () => {
+      const isActive = mobileMenuToggle.classList.contains('active');
+      
+      if (isActive) {
+        this.closeMobileMenu();
+      } else {
+        this.openMobileMenu();
+      }
     });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenuToggle.contains(e.target) && !mobileMenu.contains(e.target)) {
+        this.closeMobileMenu();
+      }
+    });
+    
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeMobileMenu();
+      }
+    });
+    
+    // Close menu when window resizes to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        this.closeMobileMenu();
+      }
+    });
+  }
+
+  // Open mobile menu
+  openMobileMenu() {
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (mobileMenuToggle && mobileMenu) {
+      mobileMenuToggle.classList.add('active');
+      mobileMenuToggle.setAttribute('aria-expanded', 'true');
+      mobileMenu.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  // Close mobile menu
+  closeMobileMenu() {
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (mobileMenuToggle && mobileMenu) {
+      mobileMenuToggle.classList.remove('active');
+      mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      mobileMenu.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
   }
 
   // Switch to a different language
@@ -60,10 +135,16 @@ class OpenFreePayApp {
     this.currentLanguage = languageCode;
     localStorage.setItem('openfreepay-language', languageCode);
     
-    // Update the language selector
+    // Update both language selectors
     const languageSelect = document.getElementById('languageSelect');
+    const mobileLanguageSelect = document.getElementById('mobileLanguageSelect');
+    
     if (languageSelect) {
       languageSelect.value = languageCode;
+    }
+    
+    if (mobileLanguageSelect) {
+      mobileLanguageSelect.value = languageCode;
     }
 
     // Update page direction for RTL languages
@@ -71,6 +152,9 @@ class OpenFreePayApp {
     
     // Translate all elements
     this.translatePage();
+    
+    // Close mobile menu if open
+    this.closeMobileMenu();
   }
 
   // Update page direction for RTL languages
